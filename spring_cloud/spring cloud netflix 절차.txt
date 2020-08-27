@@ -1,0 +1,123 @@
+
+
+=== 1. API Gateway 구성 ===
+
+-- gateway
+
+1. Zuul 종속성 추가하여 생성 
+   implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+
+2. Spring Application에 @EnableZuulProxy 추가
+
+3. application.yml 파일에 환경 구성 추가
+server:
+  port: 8000
+  
+zuul:
+  routes:
+    myworkspace:
+      path: /myworkspace/**
+      url: http://localhost:9090
+    kakao:
+      path: /kakao/**
+      url: http://localhost:9091
+    gbus:
+      path: /gbus/**
+      url: http://localhost:9091
+
+endpoints:
+  trace:
+    sensitive: false
+
+ribbon:
+  eureka:
+    enabled: false 
+
+4. cors 설정 클래스 추가   
+
+5. http://localhost:8000/서비스명/리소스로 라우팅이 되는지 확인 
+
+==============================
+
+
+=== 2. Service Discovery 및 로드밸런싱 구성 ===
+
+-- service registry
+
+1. Eureka Server 종속성 추가하여 생성 
+   implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+
+2. Spring Application에 @EnableEurekaServer 추가
+
+3. application.properties에 server.port=8761 추가 
+
+-- gateway 및 각 서비스
+
+1. 아래의 종속성 추가
+runtime group: 'org.springframework.cloud', name: 'spring-cloud-dependencies', version: 'Edgware.SR5', ext: 'pom'
+compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-eureka-client', version: '2.1.4.RELEASE'
+compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.2.1.RELEASE'   
+
+2. Spring Application에 @EnableEurekaClient 추가
+
+3. gateway는 제외하고 application.properties에 eureka 서버 경로 추가
+eureka.client.service-url.default-zone=http://localhost:8761/eureka/
+
+4. application.properties와 같은 경로에 bootstrap.properties를 생성하고 아래와 같이 서비스명을 작성
+spring.application.name=서비스명
+
+
+-- gateway
+1. 아래와 같이 application.yml 수정 -> myworkspace는 serviceId로 작동된다.
+server:
+  port: 8000
+  
+zuul:
+  ignoredServices: '*'
+  routes:
+    myworkspace:
+      path: /myworkspace/**
+      #url: http://localhost:9090
+      serviceId: myworkspace
+    kakao:
+      path: /kakao/**
+      url: http://localhost:9091
+    gbus:
+      path: /gbus/**
+      url: http://localhost:9092
+
+endpoints:
+  routes:
+    sensitive: false
+  trace:
+    sensitive: false
+    
+#ribbon:
+#  eureka:
+#    enabled: false
+    
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka 
+           
+
+-- 테스트 수행
+1. service registry 실행
+2. gateway 실행
+3. 각 서비스 실행
+4. http://localhost:8761로 Eureka Server 대시보드에 각 서비스가 등록되었는지 확인한다.
+
+
+-- 로드 밸런싱 테스트
+1. 특정 서비스에 포트만 바꾸어 실행한다.
+java -jar myworkspace-0.0.1-SNAPSHOT.jar --server.port=9190
+
+2. http://localhost:8761로 Eureka Server 대시보드에 해당 서비스의 가용서비스가 2개가 되었는지 확인한다.
+
+3. 5. http://localhost:8000/서비스명/리소스로 서비스 두개가 번갈아가면서 처리 되는지 확인한다.
+
+==============================
+
+
+

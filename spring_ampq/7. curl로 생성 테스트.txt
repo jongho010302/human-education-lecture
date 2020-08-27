@@ -1,0 +1,1 @@
+curl -H "Content-Type: application/json; charset:UTF-8" -X POST "http://localhost:9090/purchase-orders" -d @sample.json

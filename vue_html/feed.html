@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" >
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Bootstrap - Vue.js</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+    <!-- jQuery 사용자 정의 라이브러리 추가 -->
+    <script src="js/rest.js" ></script>
+    <!-- https://timeago.org/ -->
+    <script src="js/timeago.min.js" ></script> 
+    <script src="js/timeago.locales.min.js" ></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- Vue.js 라이브러리 추가-->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <!-- Vue 컴퍼넌트 추가-->    
+    <script src="components/feed-item.js"></script>
+
+    <!-- 탑 네비게이션 바-->
+    <div id="div-nav"></div>
+    
+    <div id="app" class="container-fluid bg-light">
+      <div class="row">
+        <!-- 레프트사이드 카드 -->
+        <div class="col-md-3 pt-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">@LeeCross</h5>
+              <h7 class="card-subtitle mb-2 text-muted">Fullname : Miracles Lee Cross</h7>
+              <p class="card-text">Developer of web applications, JavaScript, PHP, Java, Python, Ruby, Java, Node.js, etc.</p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="h6 text-muted">Followers</div>
+                <div class="h5">5.2342</div>
+              </li>
+              <li class="list-group-item">
+                <div class="h6 text-muted">Following</div>
+                <div class="h5">6758</div>                  
+              </li>
+            </ul>            
+          </div>
+        </div>
+        <!-- 컨텐츠 -->
+        <div class="col-md-6 pt-3">
+          <!-- 입력박스 -->
+          <div class="card mb-5" id="div-share">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item post-share">
+                  <a class="nav-link"  :class="[!isImage ? 'active' : '']" @click="changeType()" href="#/">Make a publication</a>
+                </li>
+                <li class="nav-item post-image">
+                  <a class="nav-link"  :class="[isImage ? 'active' : '']" @click="changeType()" href="#/">Images</a>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body">
+              <!-- 포스트 작성 폼 -->
+              <textarea class="form-control" placeholder="What are you thinking?" rows="3" v-model="content"></textarea>
+              <!-- 이미지 파일 선택-->
+              <div class="input-group mt-1" :class="[!isImage ? 'd-none' : '']">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" @change="fileChanged($event.target.files)" aria-describedby="inputGroupFileAddon01">
+                  <label class="custom-file-label">{{fileName}}</label>
+                </div>
+              </div>
+              <!-- share 버튼 -->
+              <button type="button" class="btn btn-primary mt-3" @click="share()">share</button>              
+            </div>
+          </div>
+          <!-- 피드 목록 -->
+          <div id="div-feed-list">
+            <feed-item :feeds="feeds"></feed-item>
+          </div>       
+        </div>
+        <!-- 라이트사이드 카드 -->
+        <div class="col-md-3 pt-3">
+          <div class="card mb-5">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#/" class="card-link">Card link</a>
+              <a href="#/" class="card-link">Another link</a>
+            </div>
+          </div>
+          <div class="card mb-5">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#/" class="card-link">Card link</a>
+              <a href="#/" class="card-link">Another link</a>
+            </div>
+          </div>          
+        </div>
+      </div>
+    </div>
+
+    <!-- 푸터 -->
+    <div id="div-footer"></div>
+
+    <script> 
+      // 네비게이션바 로딩
+      $("#div-nav").load("template/nav-bar.html", function(){
+        $(".nav-link.feed").addClass("active");
+      });
+      // 푸터 로딩
+      $("#div-footer").load("template/footer.html");
+ 
+      // Vue 인스턴스 생성          
+      var app = new Vue({
+        el: '#app',
+        data: {
+          profileShort:"@LeeCross",                  // 사용자이의 단축이름
+          profileName:"Miracles Lee Cross",          // 사용자의 이름
+          profileImg:"https://picsum.photos/45/45",  // 사용자의 이미지        
+          isImage:false,                  // 이미지 포스트인지 여부
+          content:"",                     // 텍스트 컨텐츠
+          file:null,                      // 이미지 파일 객체
+          fileName: "",                 // 이미지 파일 레이블
+          filePlaceHolder: "Choose file",  
+          feeds:null,
+        },
+        // 뷰 인스턴스 초기화 시에
+        // 컴퍼넌트에 전달되는 데이터 변수는 created() 메소드 안에서 초기화 하는게 좋다.
+        created() {
+          this.feeds = [];
+          this.fileName = this.filePlaceHolder;
+        },
+        methods: {
+          changeType: function() {
+            // 이미지 포스트인지 여부 변경
+            this.isImage = !this.isImage
+            // 이미지 포스트가 아니면 파일 초기화
+            if(!this.isImage){
+              this.file = null;
+              this.fileName = this.filePlaceHolder;           
+            }
+          },
+          fileChanged: function(files){
+            this.file = files[0];
+            this.fileName = files[0].name;
+          },
+          share: function(){
+            if(this.file){
+              // 이미지 파일이 있으면 이미지를 base64로 변환
+              var reader = new FileReader();
+              reader.readAsDataURL(this.file);
+              reader.onload = function () {
+                var base64File = reader.result;
+                // 서버에 데이터 전송
+                app.sendData(base64File);
+              };
+              reader.onerror = function (error) {
+                console.log('Error: ', error);
+              }; 
+            } else {
+              // 서버에 데이터 전송
+              this.sendData();
+            }            
+          }, 
+          sendData: function(base64File){
+            var data = {
+              content:this.content, 
+              attached_img: (!base64File ? "" : base64File),
+              timestamp: (new Date()).getTime()            
+            };            
+
+            // 데이터 전송
+            // ajax로 데이터를 전송한다.
+            
+            // 데이터 전송 후
+            // feed 객체 추가
+            this.feeds.unshift({
+              profile_short:this.profileShort,
+              profile_name:this.profileName,
+              profile_img:this.profileImg,
+              times:timeago.format(data.timestamp),
+              timestamp:data.timestamp,              
+              content:data.content,
+              attached_img:data.attached_img,
+            });
+
+            // 이전 피드 시간표시 변경
+            this.feeds.forEach(function(feed){
+              feed.times = timeago.format(feed.timestamp);
+            });
+            
+            // 텍스트 입력값 및 파일 초기화
+            this.content = "";
+            this.file = null;
+            this.fileName = this.filePlaceHolder;
+          },   
+        }
+      });      
+      
+    </script>    
+  </body>
+</html>

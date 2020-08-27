@@ -1,0 +1,24 @@
+https://kauth.kakao.com/oauth/authorize
+?client_id=83adca921c699cc375407a61a4e90342
+&redirect_uri=http://localhost:8080/redirect
+&response_type=code
+&scope=account_email,friends,talk_message
+
+https://kauth.kakao.com/oauth/authorize
+: 허가코드를 받는 Url
+?client_id: 사전에 등록할 때 받은 app id
+redirect_uri: 허가 코드를 받을 app의 페이지
+              (사전에 등록되어있어야한다)
+response_type: 응답유형(코드를 준다)
+scope: 부여할 권한에 대한 목록(카카오전용)
+
+
+https://kauth.kakao.com/oauth/token
+: 액세스토큰을 요청할 Url
+grant_type=authorization_code
+&client_id=83adca921c699cc375407a61a4e90342
+&redirect_uri=http://localhost:8080/redirect
+&code=앞에서 받은 허가코드
+
+grant_type: 허가를 받은 유형(허가 코드)
+client_id: 사전에 등록된 app id

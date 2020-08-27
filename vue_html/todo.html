@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" >
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Bootstrap - Vue.js</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+      <!-- jQuery 사용자 정의 라이브러리 추가 -->
+    <script src="js/rest.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
+    <!-- Vue.js 라이브러리 추가-->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>    
+
+    <!-- 탑 네비게이션 바-->
+    <div id="div-nav"></div>
+
+    <div id="app" class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div id="div-todo" class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title text-center">To do</h5>
+              <input id="txt-memo" type="text" class="form-control" v-model="memo" @keydown.13="add()" />
+              <div class="mt-3 float-right">
+                <button id="btn-add" type="button" class="btn btn-primary" @click="add()">Add</button>
+                <button id="btn-done" type="button" class="btn btn-success" @click="doneAll()">Mark all as done</button>
+              </div>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item" v-for="(todo, index) in todoList">
+                <i class="fa fa-check mr-3" style="cursor:pointer;" @click="done(todo, index)"></i>
+                <span>{{todo.memo}}</span>
+              </li>
+            </ul>
+            <div class="card-footer text-muted text-right">
+              <span>{{todoList.length}}</span> items left
+            </div>                        
+          </div>          
+        </div>
+        <div class="col-md-6">
+          <div id="div-done" class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center">Already Done</h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item" v-for="(done, index) in doneList">
+                  <span style="text-decoration: line-through;">{{done.memo}}</span>
+                  <i class="fa fa-times float-right" @click="del(index)" style="line-height:21px;cursor:pointer;"></i>
+                </li>
+              </ul>                
+            </div>
+          </div>
+        </div>        
+      </div>
+    </div>
+
+    <!-- 푸터 -->
+    <div id="div-footer"></div>
+    
+    <script> 
+      $("#div-nav").load("template/nav-bar.html", function(){
+        $(".nav-link.todo").addClass("active");
+      });
+      $("#div-footer").load("template/footer.html");
+      
+      // Vue 인스턴스 생성          
+      var app = new Vue({
+        el: '#app',
+        data: {
+          memo: "",       // 입력 텍스트
+          todoList: [],   // todo list 배열
+          doneList: []    // done list 배열
+        },
+        methods: {
+          add: function () {
+            // todoList 앞쪽에 추가
+            this.todoList.unshift({memo:this.memo});
+            // memo 초기화
+            this.memo = "";
+          },
+          done: function(todo, index){
+            // doneList 앞쪽에 추가
+            // JSON.parse(JSON.stringify(객체)) == 객체를 하드카피함
+            this.doneList.unshift(JSON.parse(JSON.stringify(todo)));            
+            // todoList에 index위치 객체 삭제
+            this.todoList.splice(index, 1);
+          },
+          doneAll: function(){
+            // doneList에 todoList와 doneList를 결합한 배열로 초기화
+            this.doneList = this.todoList.concat(this.doneList);
+            // todoList 초기화
+            this.todoList = [];
+          },
+          del: function(index){
+            this.doneList.splice(index, 1);
+          }          
+        },
+      });       
+    </script>
+  </body>
+</html>

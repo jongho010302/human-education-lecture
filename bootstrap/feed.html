@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" >
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Bootstrap</title>
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+    <!-- jQuery 사용자 정의 라이브러리 추가 -->
+    <script src="js/rest.js" ></script>
+    <!-- https://timeago.org/ -->
+    <script src="js/timeago.min.js" ></script> 
+    <script src="js/timeago.locales.min.js" ></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- 탑 네비게이션 바-->
+    <div id="div-nav"></div>
+    
+    <div class="container-fluid bg-light">
+      <div class="row">
+        <!-- 레프트사이드 카드 -->
+        <div class="col-md-3 pt-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">@LeeCross</h5>
+              <h7 class="card-subtitle mb-2 text-muted">Fullname : Miracles Lee Cross</h7>
+              <p class="card-text">Developer of web applications, JavaScript, PHP, Java, Python, Ruby, Java, Node.js, etc.</p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="h6 text-muted">Followers</div>
+                <div class="h5">5.2342</div>
+              </li>
+              <li class="list-group-item">
+                <div class="h6 text-muted">Following</div>
+                <div class="h5">6758</div>                  
+              </li>
+            </ul>            
+          </div>
+        </div>
+        <!-- 컨텐츠 -->
+        <div class="col-md-6 pt-3">
+          <!-- 입력박스 -->
+          <div class="card mb-5" id="div-share">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item post-share">
+                  <a class="nav-link active" href="#/">Make a publication</a>
+                </li>
+                <li class="nav-item post-image">
+                  <a class="nav-link" href="#/">Images</a>
+                </li>
+              </ul>
+              <script>
+                // id가 div-share인 요소에 class가 nav-link인 후손들 선택 click 이벤트를 처리
+                $("#div-share .nav-link").click(function(e){
+                  // 모든 선택자에 클래스 제거
+                  $("#div-share .nav-link").removeClass("active");
+                  // 이벤트 발생 링크에 클래스 추가
+                  $(this).addClass("active");
+
+                  // 선택한 요소의 li 인덱스로 하위 패널 제어
+                  var idx = $("#div-share ul>li").index($(this).parent()); 
+                  if(idx == 1){
+                    // 두번째 탭을 선택했을 때 파일선택 박스 보여주기
+                    $("#div-share>.card-body>.input-group").show();
+                  } else {
+                    // 첫번째 탭을 선택했을 때 파일선택 박스 숨기기
+                    $("#div-share>.card-body>.input-group").hide();
+                    // 선택 파일 초기화
+                    $("#inputGroupFile01").val("");
+                    $("#inputGroupFile01").next().html("Choose file");
+                  }
+                });
+              </script>
+            </div>
+            <div class="card-body">
+              <!-- 포스트 작성 폼 -->
+              <textarea class="form-control" placeholder="Whar are you thinking?" rows="3" id="txta-share"></textarea>
+              <!-- 이미지 파일 선택-->
+              <div class="input-group mt-1" style="display:none;">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+                  <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                </div>
+              </div>
+              <!-- share 버튼 -->
+              <button type="button" class="btn btn-primary mt-3" id="btn-share">share</button>              
+            </div>
+          </div>
+          <!-- 피드 목록 -->
+          <div id="div-feed-list">
+
+          </div>       
+
+        </div>
+        <!-- 라이트사이드 카드 -->
+        <div class="col-md-3 pt-3">
+          <div class="card mb-5">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#/" class="card-link">Card link</a>
+              <a href="#/" class="card-link">Another link</a>
+            </div>
+          </div>
+          <div class="card mb-5">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#/" class="card-link">Card link</a>
+              <a href="#/" class="card-link">Another link</a>
+            </div>
+          </div>          
+        </div>
+      </div>
+    </div>
+
+    <!-- 푸터 -->
+    <div id="div-footer"></div>
+
+    <script> 
+
+      var profile_short = "@LeeCross";
+      var profile_name = "Miracles Lee Cross";
+      var profile_img = "https://picsum.photos/45/45";
+
+      // 네비게이션바 로딩
+      $("#div-nav").load("template/nav-bar.html", function(){
+        $(".nav-link.feed").addClass("active");
+      });
+      // 푸터 로딩
+      $("#div-footer").load("template/footer.html");
+
+      // 피드아이템 템플릿 로딩
+      var feedItemTmpl; // 1
+      $.get("template/feed-item.html", function(tmpl){  // 2
+        feedItemTmpl = tmpl; //4
+
+        // 피드 목록 조회
+        getFeeds();   //5
+      });
+      //getFeeds();//3
+
+ 
+      /* ------- 이벤트 정의 시작 ------- */
+      // 파일 변경 이벤트
+      $("#inputGroupFile01").change(function(e){
+        var file = $(this).prop("files")[0];
+        if(file){
+          $(this).next().html(file.name);
+        }
+      });
+      // share 버튼 클릭 이벤트
+      $("#btn-share").click(function(){
+        var file = $("#inputGroupFile01").prop('files')[0];
+
+        if(file){
+          var reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = function () {
+            //console.log(reader.result);
+            var base64File = reader.result;
+            
+            // 서버에 데이터 전송
+            sendData(base64File);            
+          };
+          reader.onerror = function (error) {
+            console.log('Error: ', error);
+          }; 
+        } else {
+          sendData();
+        }
+
+        // 서버에 데이터 전송
+        function sendData(base64File){
+          //console.log(base64File);
+          // 데이터 준비
+          var data = {
+            content:$("#txta-share").val(), 
+            attached_img: (!base64File ? "" : base64File)
+          };
+          
+          // 데이터 전송
+          // ajax로 데이터를 전송한다.
+
+
+          // UI 처리
+          data.imgStyle = base64File ? "" : "d-none";
+          setUI(data);
+        }
+
+        // UI 처리
+        function setUI(data){
+          // 이전 피드에 대한 시간 표시
+          $(".hdn-times").each(function(){
+            var timestamp = parseFloat($(this).val());
+            $(this).prev().html(timeago.format(timestamp));
+          });
+
+          // 작성한 게시글 표시
+          var now = new Date();
+          $("#div-feed-list").prepend(
+            feedItemTmpl.replace(/{{profile_img}}/g, profile_img) //프로필 이미지
+                        .replace(/{{profile_short}}/g, profile_short )
+                        .replace(/{{profile_name}}/g, profile_name )
+                        .replace(/{{times}}/g, timeago.format(now))
+                        .replace(/{{timestamp}}/g, now.getTime())
+                        .replace(/{{content}}/g, data.content)
+                        .replace(/{{title}}/g, data.content)
+                        .replace(/{{img_style}}/g, data.imgStyle)
+                        .replace(/{{attached_img}}/g, data.attached_img) // 컨텐츠
+          );
+
+          // 입력값 초기화
+          $("#txta-share").val("");
+          $("#inputGroupFile01").val("");
+        }
+      });
+      /* ------- 이벤트 정의 끝 ------- */
+
+
+      // 피드 목록 조회
+      function getFeeds(){
+        //$.get(...)
+      }
+
+      
+    </script>    
+  </body>
+</html>

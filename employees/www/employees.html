@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko-kr">
+  <head>
+    <meta charset="utf-8" />
+    <title>
+      사원 관리
+    </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+    </script>
+    <style>
+    body{
+      background-color: lightblue;
+    }
+    
+    h1{
+      color: white;
+      text-align: center;
+      font-size: 50px;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>사원 관리</h1> 
+    <hr>
+    <br>
+
+    <!-- 입력 영역 시작 -->
+    <div>
+      사원번호: <span id="span-no"></span>
+      이름: <input type="text" id="txt-name">
+      이메일: <input type="email" id="txt-email">
+      연락처: <input type="tel" id="txt-phone">
+      <input type="button" value="Add" id="btn-add" />
+      <input type="button" value="Reset" onclick="init();" />
+      <input type="button" value="Mod" id="btn-mod" />
+      <input type="button" value="Random" id="btn-random" />
+      <input type="button" value="Remove" id="btn-remove" />
+      <input type="button" value="All Reset" onclick="all_reset();" />
+    </div>
+    <!-- 입력 영역 끝-->
+
+    <div style="margin-top: 10px;">
+      <table style="width: 800px;">
+        <colgroup>
+          <col width="10%">
+          <col width="30%">
+          <col width="30%">
+          <col width="30%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th style="color: tomato">사원번호</th>
+            <th style="color: tomato">이름</th>
+            <th style="color: tomato">이메일</th>
+            <th style="color: tomato">연락처</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-body" style="cursor: pointer"; align="center";>
+        </tbody>
+      </table>
+  
+    </div>
+
+    <script>
+      // Array 선언, Collection 객체
+      var employees= [];
+
+      // 임시 사원번호
+      var emp_no = 1;
+
+      //행에서 선택한 사원번호
+      var emp_no_sel = 0;
+
+
+      // I 템플릿 선언
+      var row_templ =
+        "<tr id='tr-@emp_no'>" +
+          "<td>@emp_no</td>" +
+          "<td>@emp_name</td>" + 
+          "<td>@emp_email</td>" +
+          "<td>@emp_phone</td>";
+        "</tr>";
+
+      // Dummy 변수 선언
+      var dummies = [
+          {emp_name: "김현광", emp_email: "김현광@gmail.com", emp_phone: "010-1111-2222"},
+          {emp_name: "임태혁", emp_email: "임태혁@gmail.com", emp_phone: "010-3333-4444"},
+          {emp_name: "전종호", emp_email: "전종호@gmail.com", emp_phone: "010-5555-6666"},
+          {emp_name: "최진호", emp_email: "최진호@gmail.com", emp_phone: "010-7777-8888"},
+      ];
+
+      /* ---------- 이벤트 리스터 등록부 시작 ---------- */
+      document.getElementById('btn-add').addEventListener('click', btn_add_click);
+      document.getElementById('btn-mod').addEventListener('click', btn_mod_click);
+      document.getElementById('btn-random').addEventListener('click', btn_random_click);
+      document.getElementById('btn-remove').addEventListener('click', btn_remove_click);
+      document.addEventListener('click', function(e){
+        if(e.target && e.target.tagName == "TD"){
+          select(e.target.parentNode.id.replace("tr-", ""));
+        }
+      });
+      /* ---------- 이벤트 리스터 등록부 끝 ---------- */
+
+
+      /* ---------- 이벤트 함수 선언부 시작 ---------- */
+       
+      // 데이터 추가 함수 선언   
+      function btn_add_click(){
+        var emp_name = document.getElementById("txt-name").value;
+        var emp_email = document.getElementById("txt-email").value;
+        var emp_phone = document.getElementById("txt-phone").value;
+
+        var tbl_body = document.getElementById("tbl-body");
+        
+        // 1. 배열 변수에 추가
+        // 객체 추가 방법
+        employees.push({emp_no: emp_no++, emp_name: emp_name, emp_email: emp_email, emp_phone: emp_phone});
+        // 스팬 태그 안에
+        document.getElementById("span-no").innerHTML = emp_no;
+
+        // 2. 화면 요소에 추가
+        // 테이블 바디 선택        
+        tbl_body.innerHTML += row_templ
+                .replace(/@emp_no/gi, employees[employees.length -1].emp_no)
+                .replace(/@emp_name/gi, employees[employees.length -1].emp_name)
+                .replace(/@emp_email/gi, employees[employees.length -1].emp_email)
+                .replace(/@emp_phone/gi, employees[employees.length -1].emp_phone)
+        init();
+      }
+      
+      // 임의 데이터 입력 함수 선언 
+      function btn_random_click(){
+        var min = 0;
+        var max = dummies.length - 1;
+
+        var index = Math.floor(Math.random() * (max-min + 1)) + min;
+        document.getElementById("txt-name").value = dummies[index].emp_name
+        document.getElementById("txt-email").value = dummies[index].emp_email
+        document.getElementById("txt-phone").value = dummies[index].emp_phone
+      }
+
+      // 데이터 수정 함수 선언
+      function btn_mod_click(e){
+        
+        // 1. employees 배열에 선택한 사원번호로 검색
+        var emp = employees.find(function(item){
+          return item.emp_no == emp_no_sel;
+        });
+
+        // 2. 입력박스에 입력한 값으로 변경
+        employees[emp_no_sel - 1].emp_name = document.getElementById("txt-name").value;
+        employees[emp_no_sel - 1].emp_email = document.getElementById("txt-email").value;
+        employees[emp_no_sel - 1].emp_phone = document.getElementById("txt-phone").value;
+
+        // 3. 테이블 내에 tr요소를 변경해준다.
+        var tr = document.getElementById("tr-" + emp_no_sel);
+        tr.outerHTML = row_templ
+                  .replace(/@emp_no/gi, emp_no_sel)
+                  .replace("@emp_name", employees[emp_no_sel - 1].emp_name)
+                  .replace("@emp_email", employees[emp_no_sel - 1].emp_email)
+                  .replace("@emp_phone", employees[emp_no_sel - 1].emp_phone);
+      }
+
+      // 데이터 삭제 함수 선언
+      function btn_remove_click(){
+        // 1. employees 배열에 선택한 사원번호로 검색
+        var emp = employees.find(function(item){
+          return item.emp_no == emp_no_sel;
+        });
+        employees.splice(employees.indexOf(emp), 1);
+        $('#tr-' + emp_no_sel).remove();
+        for(var i=0; i<employees.length; i++){
+          employees[i].emp_no = employees.indexOf(employees[i]) + 1;
+
+          var tr1 = document.getElementById("tr-" + employees[i].emp_no);
+          console.log(tr1);
+          console.log(employees[i].emp_no);
+     
+          if(i==employees.length-1){
+            emp_no = employees[i].emp_no + 1;
+          }
+       }
+      }
+
+      //행 선택 이벤트 처리
+      function select(emp_no){
+        
+        //배열을 0번째 요소부터 탐색하면서 find의 ()안에 있는 함수를 실행한다.
+        //실행하는 함수의 매개변수는 해당 배열의 요소
+        //안쪽 함수의 조건식 true인 배열의 요소를 반환한다.
+        var emp = employees.find(function(item){
+          return item.emp_no == emp_no;
+        });
+
+        emp_no_sel = emp.emp_no;
+
+        document.getElementById("txt-name").value = emp.emp_name;
+        document.getElementById("txt-email").value = emp.emp_email;
+        document.getElementById("txt-phone").value = emp.emp_phone;
+        document.getElementById("span-no").value = emp.emp_no;
+      }
+
+      /* ---------- 이벤트 함수 선언부 끝 ---------- */
+      
+      //입력 값 초기화
+      function init(){
+        document.getElementById("txt-name").value = "";
+        document.getElementById("txt-email").value = "";
+        document.getElementById("txt-phone").value = "";
+        document.getElementById("span-no").value = emp_no;
+      }
+
+      function all_reset(){
+        var tbl_body = document.getElementById("tbl-body");
+        tbl_body.innerHTML = "";
+        emp_no = 1;
+
+        employees=[];
+        document.getElementById("span-no").innerHTML = emp_no;
+      }
+      
+      //초기화 함수 실행
+      init();
+    </script>
+    <!-- 스크립트 태그 끝-->
+  </body>
+</html>

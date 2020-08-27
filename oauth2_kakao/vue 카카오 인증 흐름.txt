@@ -1,0 +1,13 @@
+1. http://locahost:8080/
+-> Home.vue 이동
+
+2. Home.vue 로그인 확인
+-> 로그인 안되어 있으면
+   Login.vue로 이동
+
+3. Login.vue 이미지 클릭하면
+   카카오 로그인 페이지로 이동
+-> 로그인이 완료되면 Redirect.vue로 이동
+
+4. Redirect.vue 액세스토큰을 받고 
+   프로필정보 조회하고 Home.vue로 이동해줌

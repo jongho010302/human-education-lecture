@@ -1,0 +1,19 @@
+﻿{
+   "amount": 20000,
+   "name": "홍길동",
+   "address": "중부대로 104",
+   "status": "00",
+   "timestamp": 1569210509000,
+   "purchaseOrderItems":    [
+            {
+         "productId": 1,
+         "unitPrice": 10000,
+         "quantity": 1
+      },
+            {
+         "productId": 2,
+         "unitPrice": 5000,
+         "quantity": 2
+      }
+   ]
+}
